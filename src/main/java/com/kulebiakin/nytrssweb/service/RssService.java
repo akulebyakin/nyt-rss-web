@@ -1,6 +1,5 @@
 package com.kulebiakin.nytrssweb.service;
 
-import com.kulebiakin.nytrssweb.config.CacheConfig;
 import com.kulebiakin.nytrssweb.model.Article;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,7 @@ public class RssService {
     @Value("${rss.technology.url:https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml}")
     private String technologyRssUrl;
 
-    @Cacheable(CacheConfig.ARTICLES_CACHE)
+    @Cacheable("articles")
     public List<Article> fetchTechnologyArticles() throws Exception {
         log.info("Fetching articles from RSS feed: {}", technologyRssUrl);
         try (InputStreamReader reader = new InputStreamReader(new URL(technologyRssUrl).openStream())) {
