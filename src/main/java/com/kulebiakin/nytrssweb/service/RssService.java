@@ -6,9 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.List;
 
 @Service
@@ -16,15 +15,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RssService {
     private final RssConverter rssConverter;
+    private final WebClient rssWebClient;
 
-    @Value("${rss.technology.url:https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml}")
-    private String technologyRssUrl;
+    @Value("${nytimes.rss.technology:Technology.xml}")
+    private String technologyXmlFile;
 
     @Cacheable("articles")
     public List<Article> fetchTechnologyArticles() throws Exception {
-        log.info("Fetching articles from RSS feed: {}", technologyRssUrl);
-        try (InputStreamReader reader = new InputStreamReader(new URL(technologyRssUrl).openStream())) {
-            return rssConverter.convertToArticles(reader);
-        }
+        log.info("Fetching articles from RSS feed: {}", technologyXmlFile);
+        String rssXml = rssWebClient.get()
+                .uri("/" + technologyXmlFile)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        return rssConverter.convertToArticles(rssXml);
     }
 }

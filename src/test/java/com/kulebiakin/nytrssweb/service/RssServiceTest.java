@@ -39,7 +39,8 @@ public class RssServiceTest {
 
     @DynamicPropertySource
     static void overrideRssUrl(DynamicPropertyRegistry reg) {
-        reg.add("rss.technology.url", () -> "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml");
+        reg.add("nytimes.rss.base-url", () -> "https://rss.nytimes.com/services/xml/rss/nyt");
+        reg.add("nytimes.rss.technology", () -> "Technology.xml");
     }
 
     @BeforeEach
@@ -67,7 +68,7 @@ public class RssServiceTest {
                 .published(ZonedDateTime.now())
                 .build();
 
-        when(rssConverter.convertToArticles(ArgumentMatchers.any())).thenReturn(List.of(firstExpectedArticle, secondExpectedArticle));
+        when(rssConverter.convertToArticles(ArgumentMatchers.anyString())).thenReturn(List.of(firstExpectedArticle, secondExpectedArticle));
 
         List<Article> firstArticlesFetch = rssService.fetchTechnologyArticles();
 
@@ -78,12 +79,12 @@ public class RssServiceTest {
         assertThat(secondArticlesFetch).as("Second Articles fetch should return same result").isEqualTo(firstArticlesFetch);
 
         // Check rssConverted was called only once and seond call was from cache
-        verify(rssConverter, times(1)).convertToArticles(ArgumentMatchers.any());
+        verify(rssConverter, times(1)).convertToArticles(ArgumentMatchers.anyString());
     }
 
     @Test
     void testFetchTechnologyArticlesWithError() throws Exception {
-        when(rssConverter.convertToArticles(ArgumentMatchers.any())).thenThrow(new RuntimeException("Some unexpected error"));
+        when(rssConverter.convertToArticles(ArgumentMatchers.anyString())).thenThrow(new RuntimeException("Some unexpected error"));
 
         assertThatThrownBy(() -> rssService.fetchTechnologyArticles())
                 .as("Check rss converter throws exception")
