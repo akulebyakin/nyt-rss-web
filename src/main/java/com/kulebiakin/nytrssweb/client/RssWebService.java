@@ -1,6 +1,5 @@
 package com.kulebiakin.nytrssweb.client;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,12 +10,14 @@ import java.util.Objects;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class RssWebService {
     private final WebClient rssWebClient;
+    private final String technologyFeedName;
 
-    @Value("${nytimes.rss.technology:Technology.xml}")
-    private String technologyFeedName;
+    public RssWebService(WebClient rssWebClient, @Value("${nytimes.rss.technology:Technology.xml}") String technologyFeedName) {
+        this.rssWebClient = rssWebClient;
+        this.technologyFeedName = technologyFeedName;
+    }
 
     public ByteArrayInputStream getTechnologyRssFeed() {
         log.info("Fetching articles from RSS feed: {}", technologyFeedName);

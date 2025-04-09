@@ -14,10 +14,11 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class ArticleService {
+    private static final String TECHNOLOGY_CACHE = "articles";
     private final RssConverter rssConverter;
     private final RssWebService rssWebService;
 
-    @Cacheable("articles")
+    @Cacheable(TECHNOLOGY_CACHE)
     public List<Article> fetchTechnologyArticles() throws Exception {
         ByteArrayInputStream rssXmlIs = rssWebService.getTechnologyRssFeed();
 
