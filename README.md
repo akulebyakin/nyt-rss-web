@@ -2,10 +2,10 @@
 
 SpringBoot service that
 
-* pulls the NYT Technology RSS feed
+* pulls the [NYT Technology RSS feed](https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml)
 * converts each news into a JSON `Article`
 * caches the list for 15 minutes
-* exposes articles at `http://localhost:8080/api/articles/technology` (use GET)
+* exposes articles at [http://localhost:8080/api/articles/technology](http://localhost:8080/api/articles/technology) (use GET)
 
 ---
 
@@ -25,7 +25,7 @@ SpringBoot service that
 mvn clean install
 mvn spring-boot:run
 ```
-- Get articles at `http://localhost:8080/api/articles/technology`
+- Get articles at [http://localhost:8080/api/articles/technology](http://localhost:8080/api/articles/technology)
 
 ---
 
