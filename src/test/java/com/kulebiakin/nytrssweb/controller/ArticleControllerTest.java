@@ -1,7 +1,7 @@
 package com.kulebiakin.nytrssweb.controller;
 
 import com.kulebiakin.nytrssweb.model.Article;
-import com.kulebiakin.nytrssweb.service.RssService;
+import com.kulebiakin.nytrssweb.service.ArticleService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -28,7 +28,7 @@ public class ArticleControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private RssService rssService;
+    private ArticleService articleService;
 
     @Test
     void testReturnArticlesSuccessfully() throws Exception {
@@ -42,7 +42,7 @@ public class ArticleControllerTest {
                 .published(ZonedDateTime.now())
                 .build();
 
-        when(rssService.fetchTechnologyArticles()).thenReturn(List.of(article));
+        when(articleService.fetchTechnologyArticles()).thenReturn(List.of(article));
 
         mockMvc.perform(get(TEST_RSS_TECHNOLOGY_URL))
                 .andExpect(status().isOk())
@@ -59,7 +59,7 @@ public class ArticleControllerTest {
 
     @Test
     void testReturnsError() throws Exception {
-        when(rssService.fetchTechnologyArticles()).thenThrow(new RuntimeException("This is some unexpected error"));
+        when(articleService.fetchTechnologyArticles()).thenThrow(new RuntimeException("This is some unexpected error"));
 
         mockMvc.perform(get(TEST_RSS_TECHNOLOGY_URL))
                 .andExpect(status().isInternalServerError())

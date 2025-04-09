@@ -1,4 +1,4 @@
-package com.kulebiakin.nytrssweb.config;
+package com.kulebiakin.nytrssweb.client;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class RssWebClientConfig {
+public class WebClientConfig {
 
     @Bean("rssWebClient")
     public WebClient rssWebClient(@Value("${nytimes.rss.base-url:https://rss.nytimes.com/services/xml/rss/nyt}") String baseUrl) {

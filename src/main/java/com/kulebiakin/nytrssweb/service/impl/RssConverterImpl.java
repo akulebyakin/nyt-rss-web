@@ -11,7 +11,6 @@ import com.rometools.rome.io.XmlReader;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,8 +23,8 @@ import java.util.stream.Collectors;
 public class RssConverterImpl implements RssConverter {
 
     @Override
-    public List<Article> convertToArticles(String xml) throws Exception {
-        try (XmlReader reader = new XmlReader(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)))) {
+    public List<Article> convertToArticles(ByteArrayInputStream xmlIs) throws Exception {
+        try (XmlReader reader = new XmlReader(xmlIs)) {
 
             SyndFeed feed = new SyndFeedInput().build(reader);
             return feed.getEntries().stream()

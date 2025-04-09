@@ -1,7 +1,7 @@
 package com.kulebiakin.nytrssweb.controller;
 
 import com.kulebiakin.nytrssweb.model.Article;
-import com.kulebiakin.nytrssweb.service.RssService;
+import com.kulebiakin.nytrssweb.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +14,10 @@ import java.util.List;
 @RequestMapping("/api/articles")
 @RequiredArgsConstructor
 public class ArticleController {
-    private final RssService rssService;
+    private final ArticleService articleService;
 
     @GetMapping("/technology")
     public ResponseEntity<List<Article>> technology() throws Exception {
-        return ResponseEntity.ok(rssService.fetchTechnologyArticles());
+        return ResponseEntity.ok(articleService.fetchTechnologyArticles());
     }
 }

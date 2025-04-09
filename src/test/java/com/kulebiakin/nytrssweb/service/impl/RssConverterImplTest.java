@@ -5,6 +5,8 @@ import com.kulebiakin.nytrssweb.service.RssConverter;
 import com.rometools.rome.io.FeedException;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -15,6 +17,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class RssConverterImplTest {
 
     private final RssConverter rssConverter = new RssConverterImpl();
+
+    private static ByteArrayInputStream getByteArrayInputStream(String xmlInput) {
+        return new ByteArrayInputStream(xmlInput.getBytes(StandardCharsets.UTF_8));
+    }
 
     @Test
     void testConvertValidRssXml() throws Exception {
@@ -45,7 +51,7 @@ public class RssConverterImplTest {
                 </rss>
                 """;
 
-        List<Article> articles = rssConverter.convertToArticles(validRssXml);
+        List<Article> articles = rssConverter.convertToArticles(getByteArrayInputStream(validRssXml));
 
         assertThat(articles).hasSize(2);
 
@@ -86,7 +92,7 @@ public class RssConverterImplTest {
                 </rss>
                 """;
 
-        List<Article> articles = rssConverter.convertToArticles(rssXmlWithNoImageAndNoUrl);
+        List<Article> articles = rssConverter.convertToArticles(getByteArrayInputStream(rssXmlWithNoImageAndNoUrl));
 
         assertThat(articles).hasSize(1);
 
@@ -113,7 +119,7 @@ public class RssConverterImplTest {
                 </rss>
                 """;
 
-        List<Article> articles = rssConverter.convertToArticles(rssNoArticles);
+        List<Article> articles = rssConverter.convertToArticles(getByteArrayInputStream(rssNoArticles));
 
         assertThat(articles).as("RSS feed is empty").isEmpty();
     }
@@ -121,7 +127,7 @@ public class RssConverterImplTest {
     @Test
     void testConvertRssXmlEmptyString() {
         String emptyXml = "";
-        assertThatThrownBy(() -> rssConverter.convertToArticles(emptyXml))
+        assertThatThrownBy(() -> rssConverter.convertToArticles(getByteArrayInputStream(emptyXml)))
                 .isInstanceOf(FeedException.class)
                 .hasMessageContaining("Invalid XML");
     }
