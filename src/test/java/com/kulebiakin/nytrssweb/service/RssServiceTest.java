@@ -1,6 +1,5 @@
 package com.kulebiakin.nytrssweb.service;
 
-import com.kulebiakin.nytrssweb.config.CacheConfig;
 import com.kulebiakin.nytrssweb.model.Article;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.context.annotation.Import;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -24,8 +23,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-@Import(CacheConfig.class)
+@EnableCaching
 public class RssServiceTest {
+
+    private static final String ARTICLES_CACHE = "articles";
 
     @Autowired
     private RssService rssService;
@@ -43,7 +44,7 @@ public class RssServiceTest {
 
     @BeforeEach
     void clearCache() {
-        Optional.ofNullable(cacheManager.getCache(CacheConfig.ARTICLES_CACHE)).ifPresent(Cache::clear);
+        Optional.ofNullable(cacheManager.getCache(ARTICLES_CACHE)).ifPresent(Cache::clear);
     }
 
     @Test
