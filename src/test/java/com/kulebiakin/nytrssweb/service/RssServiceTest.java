@@ -2,10 +2,13 @@ package com.kulebiakin.nytrssweb.service;
 
 import com.kulebiakin.nytrssweb.config.CacheConfig;
 import com.kulebiakin.nytrssweb.model.Article;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -14,6 +17,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -26,12 +30,20 @@ public class RssServiceTest {
     @Autowired
     private RssService rssService;
 
+    @Autowired
+    private CacheManager cacheManager;
+
     @MockitoBean
     private RssConverter rssConverter;
 
     @DynamicPropertySource
     static void overrideRssUrl(DynamicPropertyRegistry reg) {
         reg.add("rss.technology.url", () -> "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml");
+    }
+
+    @BeforeEach
+    void clearCache() {
+        Optional.ofNullable(cacheManager.getCache(CacheConfig.ARTICLES_CACHE)).ifPresent(Cache::clear);
     }
 
     @Test

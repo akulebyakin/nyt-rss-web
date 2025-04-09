@@ -20,9 +20,9 @@ public class RssConverterImplTest {
 
     private final RssConverter rssConverter = new RssConverterImpl();
 
-    private static InputStreamReader getInputStreamReader(String rssXmlWithNoImageAndNoUrl) {
+    private static InputStreamReader getInputStreamReader(String xmlInput) {
         return new InputStreamReader(
-                new ByteArrayInputStream(rssXmlWithNoImageAndNoUrl.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
+                new ByteArrayInputStream(xmlInput.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
     }
 
     @Test

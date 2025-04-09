@@ -5,7 +5,7 @@ SpringBoot service that
 * pulls the NYT Technology RSS feed
 * converts each news into a JSON `Article`
 * caches the list for 15 minutes
-* exposes articles at `/api/articles/technology`
+* exposes articles at `http://localhost:8080/api/articles/technology` (use GET)
 
 ---
 
@@ -20,14 +20,17 @@ SpringBoot service that
 
 ## Running locally
 
+- Run Spring-Boot application
 ```bash
+mvn clean install
 mvn spring-boot:run
 ```
+- Get articles at `http://localhost:8080/api/articles/technology`
 
 ---
 
 ## Run the tests
 
 ```bash
-mvn test
+mvn clean test
 ```
