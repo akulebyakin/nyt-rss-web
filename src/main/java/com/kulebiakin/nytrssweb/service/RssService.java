@@ -2,7 +2,6 @@ package com.kulebiakin.nytrssweb.service;
 
 import com.kulebiakin.nytrssweb.config.CacheConfig;
 import com.kulebiakin.nytrssweb.model.Article;
-import com.kulebiakin.nytrssweb.service.impl.RssConverterImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
