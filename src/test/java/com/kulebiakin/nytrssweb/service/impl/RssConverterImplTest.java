@@ -6,8 +6,6 @@ import com.rometools.rome.io.FeedException;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,9 +18,8 @@ public class RssConverterImplTest {
 
     private final RssConverter rssConverter = new RssConverterImpl();
 
-    private static InputStreamReader getInputStreamReader(String xmlInput) {
-        return new InputStreamReader(
-                new ByteArrayInputStream(xmlInput.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
+    private static ByteArrayInputStream getByteArrayInputStream(String xmlInput) {
+        return new ByteArrayInputStream(xmlInput.getBytes(StandardCharsets.UTF_8));
     }
 
     @Test
@@ -54,31 +51,29 @@ public class RssConverterImplTest {
                 </rss>
                 """;
 
-        try (InputStreamReader reader = getInputStreamReader(validRssXml)) {
-            List<Article> articles = rssConverter.convertToArticles(reader);
+        List<Article> articles = rssConverter.convertToArticles(getByteArrayInputStream(validRssXml));
 
-            assertThat(articles).hasSize(2);
+        assertThat(articles).hasSize(2);
 
-            Article first = articles.get(0);
-            assertThat(first.getTitle()).isEqualTo("News Title 1");
-            assertThat(first.getLink()).isEqualTo("news-url-1");
-            assertThat(first.getDescription()).isEqualTo("Test Description 1");
-            assertThat(first.getImageUrl()).isEqualTo("image-url-1");
-            assertThat(first.getAuthor()).isEqualTo("Cecilia Kang");
-            assertThat(first.getCategories()).containsExactly("Category 1", "Category 2");
-            assertThat(first.getPublished()).isEqualTo(ZonedDateTime.parse(
-                    "Tue, 08 Apr 2025 09:01:22 +0000", DateTimeFormatter.RFC_1123_DATE_TIME));
+        Article first = articles.get(0);
+        assertThat(first.getTitle()).isEqualTo("News Title 1");
+        assertThat(first.getLink()).isEqualTo("news-url-1");
+        assertThat(first.getDescription()).isEqualTo("Test Description 1");
+        assertThat(first.getImageUrl()).isEqualTo("image-url-1");
+        assertThat(first.getAuthor()).isEqualTo("Cecilia Kang");
+        assertThat(first.getCategories()).containsExactly("Category 1", "Category 2");
+        assertThat(first.getPublished()).isEqualTo(ZonedDateTime.parse(
+                "Tue, 08 Apr 2025 09:01:22 +0000", DateTimeFormatter.RFC_1123_DATE_TIME));
 
-            Article second = articles.get(1);
-            assertThat(second.getTitle()).isEqualTo("News Title 2");
-            assertThat(second.getLink()).isEqualTo("news-url-2");
-            assertThat(second.getDescription()).isEqualTo("News Description 2");
-            assertThat(second.getImageUrl()).isEqualTo("image-url-2");
-            assertThat(second.getAuthor()).isEqualTo("Lauren Hirsch");
-            assertThat(second.getCategories()).containsExactly("Category 2", "Category 3");
-            assertThat(second.getPublished()).isEqualTo(ZonedDateTime.parse(
-                    "Wed, 09 Apr 2025 06:37:07 +0000", DateTimeFormatter.RFC_1123_DATE_TIME));
-        }
+        Article second = articles.get(1);
+        assertThat(second.getTitle()).isEqualTo("News Title 2");
+        assertThat(second.getLink()).isEqualTo("news-url-2");
+        assertThat(second.getDescription()).isEqualTo("News Description 2");
+        assertThat(second.getImageUrl()).isEqualTo("image-url-2");
+        assertThat(second.getAuthor()).isEqualTo("Lauren Hirsch");
+        assertThat(second.getCategories()).containsExactly("Category 2", "Category 3");
+        assertThat(second.getPublished()).isEqualTo(ZonedDateTime.parse(
+                "Wed, 09 Apr 2025 06:37:07 +0000", DateTimeFormatter.RFC_1123_DATE_TIME));
     }
 
     @Test
@@ -97,21 +92,19 @@ public class RssConverterImplTest {
                 </rss>
                 """;
 
-        try (InputStreamReader reader = getInputStreamReader(rssXmlWithNoImageAndNoUrl)) {
-            List<Article> articles = rssConverter.convertToArticles(reader);
+        List<Article> articles = rssConverter.convertToArticles(getByteArrayInputStream(rssXmlWithNoImageAndNoUrl));
 
-            assertThat(articles).hasSize(1);
+        assertThat(articles).hasSize(1);
 
-            Article article = articles.get(0);
-            assertThat(article.getTitle()).isEqualTo("News Title Without Image and link");
-            assertThat(article.getLink()).isNull();
-            assertThat(article.getDescription()).isEqualTo("Description Without Image and link");
-            assertThat(article.getImageUrl()).isNull();
-            assertThat(article.getAuthor()).isEqualTo("Author Without Image and link");
-            assertThat(article.getCategories()).containsExactly("Category Without Image and link");
-            assertThat(article.getPublished()).isEqualTo(ZonedDateTime.parse(
-                    "Fri, 11 Apr 2025 15:00:00 +0000", DateTimeFormatter.RFC_1123_DATE_TIME));
-        }
+        Article article = articles.get(0);
+        assertThat(article.getTitle()).isEqualTo("News Title Without Image and link");
+        assertThat(article.getLink()).isNull();
+        assertThat(article.getDescription()).isEqualTo("Description Without Image and link");
+        assertThat(article.getImageUrl()).isNull();
+        assertThat(article.getAuthor()).isEqualTo("Author Without Image and link");
+        assertThat(article.getCategories()).containsExactly("Category Without Image and link");
+        assertThat(article.getPublished()).isEqualTo(ZonedDateTime.parse(
+                "Fri, 11 Apr 2025 15:00:00 +0000", DateTimeFormatter.RFC_1123_DATE_TIME));
     }
 
     @Test
@@ -126,20 +119,16 @@ public class RssConverterImplTest {
                 </rss>
                 """;
 
-        try (InputStreamReader reader = getInputStreamReader(rssNoArticles)) {
-            List<Article> articles = rssConverter.convertToArticles(reader);
+        List<Article> articles = rssConverter.convertToArticles(getByteArrayInputStream(rssNoArticles));
 
-            assertThat(articles).as("RSS feed is empty").isEmpty();
-        }
+        assertThat(articles).as("RSS feed is empty").isEmpty();
     }
 
     @Test
-    void testConvertRssXmlEmptyString() throws IOException {
+    void testConvertRssXmlEmptyString() {
         String emptyXml = "";
-        try (InputStreamReader reader = getInputStreamReader(emptyXml)) {
-            assertThatThrownBy(() -> rssConverter.convertToArticles(reader))
-                    .isInstanceOf(FeedException.class)
-                    .hasMessageContaining("Invalid XML");
-        }
+        assertThatThrownBy(() -> rssConverter.convertToArticles(getByteArrayInputStream(emptyXml)))
+                .isInstanceOf(FeedException.class)
+                .hasMessageContaining("Invalid XML");
     }
 }

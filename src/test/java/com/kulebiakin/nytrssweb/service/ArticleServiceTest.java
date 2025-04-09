@@ -24,12 +24,12 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @EnableCaching
-public class RssServiceTest {
+public class ArticleServiceTest {
 
     private static final String ARTICLES_CACHE = "articles";
 
     @Autowired
-    private RssService rssService;
+    private ArticleService articleService;
 
     @Autowired
     private CacheManager cacheManager;
@@ -39,7 +39,8 @@ public class RssServiceTest {
 
     @DynamicPropertySource
     static void overrideRssUrl(DynamicPropertyRegistry reg) {
-        reg.add("rss.technology.url", () -> "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml");
+        reg.add("nytimes.rss.base-url", () -> "https://rss.nytimes.com/services/xml/rss/nyt");
+        reg.add("nytimes.rss.technology", () -> "Technology.xml");
     }
 
     @BeforeEach
@@ -69,12 +70,12 @@ public class RssServiceTest {
 
         when(rssConverter.convertToArticles(ArgumentMatchers.any())).thenReturn(List.of(firstExpectedArticle, secondExpectedArticle));
 
-        List<Article> firstArticlesFetch = rssService.fetchTechnologyArticles();
+        List<Article> firstArticlesFetch = articleService.fetchTechnologyArticles();
 
         assertThat(firstArticlesFetch.size() == 2).as("Ferch articles should return list of articles - size").isTrue();
         assertThat(firstArticlesFetch).as("Fetch articles - content").containsAll(List.of(firstExpectedArticle, secondExpectedArticle));
 
-        List<Article> secondArticlesFetch = rssService.fetchTechnologyArticles();
+        List<Article> secondArticlesFetch = articleService.fetchTechnologyArticles();
         assertThat(secondArticlesFetch).as("Second Articles fetch should return same result").isEqualTo(firstArticlesFetch);
 
         // Check rssConverted was called only once and seond call was from cache
@@ -85,12 +86,12 @@ public class RssServiceTest {
     void testFetchTechnologyArticlesWithError() throws Exception {
         when(rssConverter.convertToArticles(ArgumentMatchers.any())).thenThrow(new RuntimeException("Some unexpected error"));
 
-        assertThatThrownBy(() -> rssService.fetchTechnologyArticles())
+        assertThatThrownBy(() -> articleService.fetchTechnologyArticles())
                 .as("Check rss converter throws exception")
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Some unexpected error");
 
-        assertThatThrownBy(() -> rssService.fetchTechnologyArticles()).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> articleService.fetchTechnologyArticles()).isInstanceOf(RuntimeException.class);
 
         // Check rssConverted was called twice - no caching
         verify(rssConverter, times(2)).convertToArticles(any());

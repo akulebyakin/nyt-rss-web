@@ -7,9 +7,10 @@ import com.rometools.rome.feed.synd.SyndCategory;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
+import com.rometools.rome.io.XmlReader;
 import org.springframework.stereotype.Component;
 
-import java.io.InputStreamReader;
+import java.io.ByteArrayInputStream;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,11 +23,14 @@ import java.util.stream.Collectors;
 public class RssConverterImpl implements RssConverter {
 
     @Override
-    public List<Article> convertToArticles(InputStreamReader reader) throws Exception {
-        SyndFeed feed = new SyndFeedInput().build(reader);
-        return feed.getEntries().stream()
-                .map(this::toArticle)
-                .collect(Collectors.toList());
+    public List<Article> convertToArticles(ByteArrayInputStream xmlIs) throws Exception {
+        try (XmlReader reader = new XmlReader(xmlIs)) {
+
+            SyndFeed feed = new SyndFeedInput().build(reader);
+            return feed.getEntries().stream()
+                    .map(this::toArticle)
+                    .collect(Collectors.toList());
+        }
     }
 
     private Article toArticle(SyndEntry entry) {
