@@ -23,7 +23,7 @@ public class RssWebServiceIT {
 
     @RegisterExtension
     private static final WireMockExtension wm = WireMockExtension.newInstance()
-            .options(WireMockConfiguration.wireMockConfig())
+            .options(WireMockConfiguration.wireMockConfig().dynamicPort())
             .build();
 
     @Autowired
