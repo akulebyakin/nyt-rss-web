@@ -36,7 +36,7 @@ mvn spring-boot:run
   - `services.frontend.build.context`: path to `nyt-rss-frontend`
   - `services.frontend.volumes`: first volume contain the path to `nyt-rss-frontend`
 ```bash
-docker-compose up --build
+docker-compose up
 ```
 - Access the NYT RSS application:
     - Backend API: http://localhost:8080/api/articles/technology
@@ -49,6 +49,22 @@ docker-compose down
 
 ## Run the tests
 
+- Run unit tests only (*Test)
 ```bash
-mvn clean test
+mvn test
+```
+
+- Run unit and integration tests (*Test and *IT)
+```bash
+mvn verify
+```
+
+- Generate a test coverage report
+```bash
+mvn surefire-report:report-only
+```
+
+- Open report in browser
+```bash
+open target/reports/surefire.html
 ```

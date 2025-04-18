@@ -18,6 +18,10 @@
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <wiremock.version>3.12.1</wiremock.version>
+        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.5.3</maven-failsafe-plugin.version>
+        <maven-surefire-report-plugin.version>3.5.3</maven-surefire-report-plugin.version>
     </properties>
 
     <dependencies>
@@ -59,8 +63,8 @@
         </dependency>
         <dependency>
             <groupId>org.wiremock</groupId>
-            <artifactId>wiremock</artifactId>
-            <version>3.12.1</version>
+            <artifactId>wiremock-jetty12</artifactId>
+            <version>${wiremock.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -89,6 +93,43 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven-failsafe-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>integration-tests</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <reportsDirectory>${project.build.directory}/failsafe-reports</reportsDirectory>
+                </configuration>
+            </plugin>
+            <!--run report mvn surefire-report:report-only-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>${maven-surefire-report-plugin.version}</version>
+                <configuration>
+                    <reportsDirectories>
+                        <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                        <reportsDirectory>${project.build.directory}/failsafe-reports</reportsDirectory>
+                    </reportsDirectories>
                 </configuration>
             </plugin>
         </plugins>
