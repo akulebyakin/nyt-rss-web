@@ -29,6 +29,24 @@ mvn spring-boot:run
 
 ---
 
+## Run the application in Docker
+
+- Configure `docker-compose.yml` file with your local frontend and backend directories
+  - `services.backend.build.context`: path to `nyt-rss-web`
+  - `services.frontend.build.context`: path to `nyt-rss-frontend`
+  - `services.frontend.volumes`: first volume contain the path to `nyt-rss-frontend`
+```bash
+docker-compose up --build
+```
+- Access the NYT RSS application:
+    - Backend API: http://localhost:8080/api/articles/technology
+    - Frontend: http://localhost:5173
+- Stop the application:
+```bash
+docker-compose down
+```
+---
+
 ## Run the tests
 
 ```bash
